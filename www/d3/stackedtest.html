@@ -1,0 +1,503 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html  xmlns="http://www.w3.org/1999/xhtml"
+       xml:lang="en-US"
+       lang="en-US">
+  <head profile="http://www.w3.org/2005/10/profile">
+    <title>IF4IT Sample Charts Web Page</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+    <meta name="Description" content="This page tries to mix charts with html formatting and layout constructs." />
+    <meta http-equiv="pragma" content="no-cache" />
+    <meta http-equiv="cache-control" content="no-cache" />
+    <meta http-equiv="expires" content="-l" />
+
+    <script type="text/javascript" src="http://mbostock.github.com/d3/d3.js?2.4.5"></script>
+
+
+    <script type="text/javascript">
+    
+    // Created by Frank Guerino : "http://www.guerino.net"
+
+    // Data Used for this example...
+    var groupSet = [
+      {legendText: "Group A", link: "http://www.if4it.com"},
+      {legendText: "Group B", link: "http://www.if4it.com/glossary.html"},
+      {legendText: "Group C", link: "http://www.if4it.com/disciplines.html"}
+    ];
+
+    var dataSetA = [
+      {axis: "Week 1", groupName: "Group A", base: 0, offset: 54, link: "http://www.if4it.com"},
+      {axis: "Week 2", groupName: "Group A", base: 0, offset: 21, link: "http://www.if4it.com/glossary.html"},
+      {axis: "Week 3", groupName: "Group A", base: 0, offset: 31, link: "http://www.if4it.com/resources.html"},
+      {axis: "Week 4", groupName: "Group A", base: 0, offset: 14, link: "http://www.if4it.com/taxonomy.html"},
+      {axis: "Week 5", groupName: "Group A", base: 0, offset: 19, link: "http://www.if4it.com/disciplines.html"},
+      {axis: "Week 6", groupName: "Group A", base: 0, offset: 47, link: "http://www.if4it.com"},
+      {axis: "Week 7", groupName: "Group A", base: 0, offset: 27, link: "http://www.if4it.com/glossary.html"}];
+
+    var dataSetB = [
+      {axis: "Week 1", groupName: "Group B", base: 54, offset: 4, link: "http://www.if4it.com/glossary.html"},
+      {axis: "Week 2", groupName: "Group B", base: 21, offset: 21, link: "http://www.if4it.com/taxonomy.html"},
+      {axis: "Week 3", groupName: "Group B", base: 31, offset: 11, link: "http://www.if4it.com"},
+      {axis: "Week 4", groupName: "Group B", base: 14, offset: 24, link: "http://www.if4it.com/disciplines.html"},
+      {axis: "Week 5", groupName: "Group B", base: 19, offset: 11, link: "http://www.if4it.com/taxonomy.html"},
+      {axis: "Week 6", groupName: "Group B", base: 47, offset: 7, link: "http://www.if4it.com/disciplines.html"},
+      {axis: "Week 7", groupName: "Group B", base: 27, offset: 10, link: "http://www.if4it.com"}];
+
+    var dataSetC = [
+      {axis: "Week 1", groupName: "Group C", base: 58, offset: 15, link: "http://www.if4it.com"},
+      {axis: "Week 2", groupName: "Group C", base: 42, offset: 21, link: "http://www.if4it.com"},
+      {axis: "Week 3", groupName: "Group C", base: 42, offset: 11, link: "http://www.if4it.com/taxonomy.html"},
+      {axis: "Week 4", groupName: "Group C", base: 38, offset: 24, link: "http://www.if4it.com/glossary.html"},
+      {axis: "Week 5", groupName: "Group C", base: 30, offset: 39, link: "http://www.if4it.com"},
+      {axis: "Week 6", groupName: "Group C", base: 54, offset: 17, link: "http://www.if4it.com/disciplines.html"},
+      {axis: "Week 7", groupName: "Group C", base: 37, offset: 27, link: "http://www.if4it.com"}];
+
+    function drawTopDownStackedBars(dataSet1, dataSet2, dataSet3, selectString) {
+
+      var canvasWidth = 700;
+      var barsWidthTotal = 300
+      var barWidth = barsWidthTotal / dataSet1.length;
+      //var canvasHeight = dataSet1.length * 20 + 40;
+      var canvasHeight = 150;
+
+      var x = d3.scale.linear().domain([0, dataSet1.length]).range([0, barsWidthTotal]);
+      //var y = d3.scale.linear().domain([0, d3.max(dataSet1, function(d) { return d.magnitude; })]).rangeRound([0, canvasHeight/3]);
+
+      //document.writeln(selectString);
+
+      // Create the svg drawing canvas...
+      var canvas = d3.select(selectString)
+        .append("svg:svg")
+          //.style("background-color", "yellow")
+          .attr("width", canvasWidth)
+          .attr("height", canvasHeight);
+
+      // Draw individual hyper text enabled bars for dataSet1...
+      canvas.selectAll("rect")
+        .data(dataSet1)
+        .enter().append("svg:g")
+          .append("svg:a")
+          .attr("xlink:href", function(d) { return d.link; })
+          .append("rect")
+            .attr("x", function(d, i) { return x(i); })
+            .attr("y", function(d) { return d.base; })
+            .attr("height", function(d) { return d.offset; })
+            .attr("width", barWidth)
+            .style("fill", "White" )
+            .style("stroke", "White" )
+            .style("fill", "DarkGreen")
+            .style("stroke", "white"); // Bar border color...
+
+
+      // Draw individual hyper text enabled bars for dataSet2...
+      canvas.selectAll("g")
+        .data(dataSet2)
+	  .append("svg:a")
+          .attr("xlink:href", function(d) { return d.link; })
+          .append("rect")
+            .attr("x", function(d, i) { return x(i); })
+            .attr("y", function(d) { return d.base; })
+            .attr("height", function(d) { return d.offset; })
+            .attr("width", barWidth)
+            .style("fill", "White" )
+            .style("stroke", "White" )
+            .style("fill", "GoldenRod")
+            .style("stroke", "white"); // Bar border color...
+
+      // Draw individual hyper text enabled bars for dataSet3...
+      canvas.selectAll("g")
+        .data(dataSet3)
+	  .append("svg:a")
+          .attr("xlink:href", function(d) { return d.link; })
+          .append("rect")
+            .attr("x", function(d, i) { return x(i); })
+            .attr("y", function(d) { return d.base; })
+            .attr("height", function(d) { return d.offset; })
+            .attr("width", barWidth)
+            .style("fill", "White" )
+            .style("stroke", "White" )
+            .style("fill", "Maroon")
+            .style("stroke", "white"); // Bar border color...
+
+      // Plot the bullet circles...
+      canvas.selectAll("circle")
+        .data(groupSet)
+        .enter().append("svg:a") // Append legend elements
+          .attr("xlink:href", function(d) { return d.link; })
+	  .append("svg:circle")
+            .attr("cx", barsWidthTotal + 50)
+            .attr("cy", function(d, i) { return 10 + i*20; } )
+            .attr("stroke-width", ".5")
+	    .style("fill", function(d, i) { switch(i){ case 0: return "DarkGreen"; case 1: return "GoldenRod"; default: return "Maroon"; } } ) // Bar fill color
+            .attr("r", 5);
+
+      // Create hyper linked text at right that acts as label key...
+      canvas.selectAll("a.legend_link")
+        .data(groupSet) // Instruct to bind dataSet to text elements
+        .enter().append("svg:a") // Append legend elements
+          .attr("xlink:href", function(d) { return d.link; })
+          .append("text")
+            .attr("text-anchor", "left")
+            .attr("x", barsWidthTotal + 50 + 20)
+            .attr("y", function(d, i) { return 10 + i*20 - 10; })
+            .attr("dx", 0)
+            .attr("dy", "1em") // Controls padding to place text above bars
+            .text(function(d) { return d.legendText;})
+            .style("fill", "Blue");
+
+    };
+
+
+    function drawBottomUpStackedBars(dataSet1, dataSet2, dataSet3, selectString) {
+
+      var canvasWidth = 700;
+      var barsWidthTotal = 300
+      var barWidth = barsWidthTotal / dataSet1.length;
+      //var canvasHeight = dataSet1.length * 20 + 40;
+      var canvasHeight = 150;
+
+      var x = d3.scale.linear().domain([0, dataSet1.length]).range([0, barsWidthTotal]);
+      //var y = d3.scale.linear().domain([0, d3.max(dataSet1, function(d) { return d.magnitude; })]).rangeRound([0, canvasHeight/3]);
+
+      //document.writeln(selectString);
+
+      // Create the svg drawing canvas...
+      var canvas = d3.select(selectString)
+        .append("svg:svg")
+          //.style("background-color", "yellow")
+          .attr("width", canvasWidth)
+          .attr("height", canvasHeight);
+
+      // Draw individual hyper text enabled bars for dataSet1...
+      canvas.selectAll("rect")
+        .data(dataSet1)
+        .enter().append("svg:g")
+          .append("svg:a")
+          .attr("xlink:href", function(d) { return d.link; })
+          .append("rect")
+            .attr("x", function(d, i) { return x(i); })
+            .attr("y", function(d) { return (canvasHeight - d.offset); })
+            .attr("height", function(d) { return (canvasHeight - d.base); })
+            .attr("width", barWidth)
+            .style("fill", "White" )
+            .style("stroke", "White" )
+            .style("fill", "DarkGreen")
+            .style("stroke", "white"); // Bar border color...
+
+
+      // Draw individual hyper text enabled bars for dataSet2...
+      canvas.selectAll("g")
+        .data(dataSet2)
+	  .append("svg:a")
+          .attr("xlink:href", function(d) { return d.link; })
+          .append("rect")
+            .attr("x", function(d, i) { return x(i); })
+            .attr("y", function(d) { return (canvasHeight - (d.base + d.offset)); })
+            .attr("height", function(d) { return d.offset; })
+            .attr("width", barWidth)
+            .style("fill", "White" )
+            .style("stroke", "White" )
+            .style("fill", "GoldenRod")
+            .style("stroke", "white"); // Bar border color...
+
+      // Draw individual hyper text enabled bars for dataSet3...
+      canvas.selectAll("g")
+        .data(dataSet3)
+	  .append("svg:a")
+          .attr("xlink:href", function(d) { return d.link; })
+          .append("rect")
+            .attr("x", function(d, i) { return x(i); })
+            .attr("y", function(d) { return (canvasHeight - (d.base + d.offset)); })
+            .attr("height", function(d) { return d.offset; })
+            .attr("width", barWidth)
+            .style("fill", "White" )
+            .style("stroke", "White" )
+            .style("fill", "Maroon")
+            .style("stroke", "white"); // Bar border color...
+
+      // Plot the bullet circles...
+      canvas.selectAll("circle")
+        .data(groupSet)
+        .enter().append("svg:a") // Append legend elements
+          .attr("xlink:href", function(d) { return d.link; })
+	  .append("svg:circle")
+            .attr("cx", barsWidthTotal + 50)
+            .attr("cy", function(d, i) { return 80 + i*20; } )
+            .attr("stroke-width", ".5")
+	    .style("fill", function(d, i) { switch(i){ case 0: return "DarkGreen"; case 1: return "GoldenRod"; default: return "Maroon"; } } ) // Bar fill color
+            .attr("r", 5);
+
+      // Create hyper linked text at right that acts as label key...
+      canvas.selectAll("a.legend_link")
+        .data(groupSet) // Instruct to bind dataSet to text elements
+        .enter().append("svg:a") // Append legend elements
+          .attr("xlink:href", function(d) { return d.link; })
+          .append("text")
+            .attr("text-anchor", "left")
+            .attr("x", barsWidthTotal + 50 + 20)
+            .attr("y", function(d, i) { return 80 + i*20 - 10; })
+            .attr("dx", 0)
+            .attr("dy", "1em") // Controls padding to place text above bars
+            .text(function(d) { return d.legendText;})
+            .style("fill", "Blue");
+
+    };
+
+
+    </script>
+
+
+    <STYLE type="text/css">
+      div.div_Header {
+	width: 100%;
+	border:2px solid White;
+	border-radius:7px;
+	background: WhiteSmoke;
+	font: bold 14px Arial;
+	font-family:Arial, Helvetica, sans-serif;
+	text-align:center;
+      }
+      h1.h1_BodyHeader {
+	text-align:center;
+	font: bold 1.5em Arial;
+      }
+      h2.h2_LeftMenuHeader {
+	text-align:center;
+	font: bold 1.2em Arial;
+      }
+      h3.h3_Body {
+	text-align:center;
+      }
+      p.p_Red {
+	color:Red;
+      }
+      table.table_Header {
+	width: 100%;
+	text-align:center;
+      }
+      td.td_HeaderLeft {
+	text-align:left;
+      }
+      td.td_HeaderRight {
+	text-align:right;
+      }
+      div.div_Menu {
+	width: 100%;
+	border:2px solid White;
+	border-radius:7px;
+	background: MidnightBlue;
+	font: bold 14px Arial;
+	font-family:Arial, Helvetica, sans-serif;
+	color:White;
+	text-align:center;
+      }
+      p.p_Left {
+	font-family:Arial, Helvetica, sans-serif;
+	color:Black;
+	text-align:left;
+	padding-left: 5px;
+	font: normal 14px Arial;
+      }
+      table.table_Body {
+	width: 100%;
+	height: 100%;
+	padding: 0;
+      }
+      td.td_BodyLeft {
+	width: 250px;
+	height: 100%;
+	padding: 0;
+      }
+      li.li_LeftMenu {
+	text-align:left;
+	font: normal 14px Arial;
+      }
+      a.a_LeftMenuNoUnderLine {
+	text-decoration:  none;
+      }
+      div.div_Body {
+	height: 100%;
+	width: 100%;
+	position: relative;
+	border:2px solid White;
+	border-radius:7px;
+	background: WhiteSmoke;
+	font: bold 14px Arial;
+	font-family:Arial, Helvetica, sans-serif;
+	color:Black;
+	text-align:center;
+      }
+      div.div_Footer {
+	width: 100%;
+	border:2px solid White;
+	border-radius:7px;
+	background: MidnightBlue;
+	font: bold 14px Arial;
+	font-family:Arial, Helvetica, sans-serif;
+	color:White;
+	text-align:center;
+      }
+      p.p_if4itMessage {
+	width: 100%;
+	background: White;
+	font: bold .75em Arial;
+	font-family:Arial, Helvetica, sans-serif;
+	color:GoldenRod;
+	text-align:center;
+      }
+      .menuButton{
+        background-color: MidnightBlue;
+      }
+      .menuButton li{
+	height: 100%;
+	list-style: none;
+	display: inline;
+      }
+      .menuButton li a{
+	height: 100%;
+	padding: 3px 0.5em;
+	text-decoration: none;
+	color: White;
+	background-color: MidnightBlue;
+	border: 2px solid MidnightBlue;
+      }
+      .menuButton li a:hover{
+	height: 100%;
+	color: MidnightBlue;
+	background-color: White;
+	border-style: outset;
+	background-color: White;
+      }
+      .menuButton li a:active{
+        height: 100%;
+        border-style: inset;
+        color: MidnightBlue;
+        background-color: White;
+      }
+      .menuButton li a.disabled{
+        height: 100%;
+        padding: 3px 0.5em;
+        text-decoration: none;
+        color: MidnightBlue;
+        background-color: White;
+        border: 2px solid MidnightBlue;
+        border-style: inset;
+        border-color: White;
+      }
+    </STYLE>
+
+    <STYLE type="text/css">
+      div.div_RootBody {
+	position: relative;
+	border:2px solid White;
+	border-radius:7px;
+	background: WhiteSmoke;
+	font: normal 14px Arial;
+	font-family:Arial, Helvetica, sans-serif;
+	color:Black;
+	padding: 0px 1em;
+	text-align:left;
+      }
+    </STYLE>
+
+    <!--[if gt IE 7]>
+      <style>body { overflow-y:scroll; } </style>
+    <![endif]-->
+
+  </head>
+
+  <body>
+
+    <p id="dateString"></p>
+
+      <div>
+	<h1 style="text-align:center; font: bold 1.7em Arial;"><a href="http://www.if4it.com">The International Foundation for Information Technology (IF4IT)</a></h1>
+      </div>
+
+      <div class="div_Menu">
+        <ul class="menuButton">
+          <li><a href="http://www.if4it.com">HOME</a></li>
+          <li><a href="http://www.if4it.com/resources.html">RESOURCES</a></li>
+          <li><a href="http://www.if4it.com">PRODUCTS</a></li>
+          <li><a href="http://www.if4it.com">SERVICES</a></li>
+          <li><a href="http://www.if4it.com">SUPPORT</a></li>
+          <li><a href="http://www.if4it.com">HELP</a></li>
+        </ul>
+      </div>
+      <table class="table_Body">
+        <tr>
+          <td class="td_BodyLeft">
+            <div class="div_Body">
+              <h2 class="h2_LeftMenuHeader">Sample Left Menu Links</h2>
+              <ul>
+                <li class="li_LeftMenu"><a class="a_LeftMenuNoUnderLine" href="http://www.if4it.com">IF4IT Home</a></li>
+                <li class="li_LeftMenu"><a class="a_LeftMenuNoUnderLine" href="http://www.if4it.com/disciplines.html">IF4IT Disciplines</a></li>
+                <li class="li_LeftMenu"><a class="a_LeftMenuNoUnderLine" href="http://www.if4it.com/glossary.html">IF4IT Glossary</a></li>
+                <li class="li_LeftMenu"><a class="a_LeftMenuNoUnderLine" href="http://www.if4it.com/taxonomy.html">IF4IT Taxonomies</a></li>
+              </ul>
+	      <p class="p_Left">This is dummy paragraph 1 text that would go in this section of the page.</p>
+	      <p class="p_Left">This is dummy paragraph 2 text that would go in this section of the page.</p>
+	      <p class="p_Left">This is dummy paragraph 3 text that would go in this section of the page.</p>
+	      <p class="p_Left">This is dummy paragraph 4 text that would go in this section of the page.</p>
+	      <p class="p_Left">This is dummy paragraph 5 text that would go in this section of the page.</p>
+              <ul>
+                <li class="li_LeftMenu"><a class="a_LeftMenuNoUnderLine" href="http://www.if4it.com">IF4IT Home</a></li>
+                <li class="li_LeftMenu"><a class="a_LeftMenuNoUnderLine" href="http://www.if4it.com/disciplines.html">IF4IT Disciplines</a></li>
+                <li class="li_LeftMenu"><a class="a_LeftMenuNoUnderLine" href="http://www.if4it.com/glossary.html">IF4IT Glossary</a></li>
+                <li class="li_LeftMenu"><a class="a_LeftMenuNoUnderLine" href="http://www.if4it.com/taxonomy.html">IF4IT Taxonomies</a></li>
+              </ul>
+	      <p class="p_Left">This is dummy paragraph 1 text that would go in this section of the page.</p>
+	      <p class="p_Left">This is dummy paragraph 2 text that would go in this section of the page.</p>
+	      <p class="p_Left">This is dummy paragraph 3 text that would go in this section of the page.</p>
+	      <p class="p_Left">This is dummy paragraph 4 text that would go in this section of the page.</p>
+	      <p class="p_Left">This is dummy paragraph 5 text that would go in this section of the page.</p>
+            </div>
+          </td>
+          <td>
+            <div class="div_RootBody">
+              <h1 style="text-align:center; font: bold 1.5em Arial;">D3 Stacked Bar Charts on an HTML Page</h1> 
+            </div>
+            <div class="div_RootBody">
+	      <h3 class="h3_Body">Example Description</h3>
+	      <p class="p_Red">This example shows how to create multiple D3 based Stacked Bar Charts, both Top Down and Bottom Up, "<b>without using the d3.layout.stack() layout.</b>" Cut, paste, and run the code into your own index.html file to see the multiple charts.</p>
+            </div>
+            <div class="div_RootBody" id="stacked_bar_chart_1">
+	      <h3 class="h3_Body">Top Down Stacked Bar Chart</h3>
+              <div class="chart"></div>
+            </div>
+            <div class="div_RootBody">
+	      <h3 class="h3_Body">Content Section: No Charts Here</h3>
+	      <p>This is dummy paragraph 1 text that would go in this section of the page.</p>
+	      <p>This is dummy paragraph 2 text that would go in this section of the page.</p>
+            </div>
+            <div class="div_RootBody" id="stacked_bar_chart_2">
+	      <h3 class="h3_Body">Bottom Up Stacked Bar Chart</h3>
+              <div class="chart"></div>
+            </div>
+            <div class="div_RootBody">
+	      <h3 class="h3_Body">Content Section: No Charts Here</h3>
+	      <p>This is dummy paragraph 1 text that would go in this section of the page.</p>
+	      <p>This is dummy paragraph 2 text that would go in this section of the page.</p>
+            </div>
+            <div class="div_RootBody">
+	      <h3 class="h3_Body">Content Section: No Charts Here</h3>
+	      <p>This is dummy paragraph 1 text that would go in this section of the page.</p>
+	      <p>This is dummy paragraph 2 text that would go in this section of the page.</p>
+            </div>
+          </td>
+        </tr>
+      </table>
+
+      <div class="div_Footer"><p><p>This is the IF4IT Footer Message for this web page.</p></p></div>
+
+      <div><p class="p_if4itMessage">This Site Has Been Created and Published by The International Foundation for Information Technology (IF4IT).</p></div>
+
+      <script type="text/javascript">
+        drawTopDownStackedBars(dataSetA, dataSetB, dataSetC, "#stacked_bar_chart_1 .chart");
+        drawBottomUpStackedBars(dataSetA, dataSetB, dataSetC, "#stacked_bar_chart_2 .chart");
+      </script>
+
+    </body>
+
+</html>
