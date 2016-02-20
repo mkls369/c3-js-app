@@ -13,7 +13,7 @@ lineChartOutput <- function(inputId, width="100%", height="400px") {
       tags$script(src="d3/d3.v3.min.js"),
       tags$script(src="nvd3/nv.d3.min.js"),
       tags$script(src="c3/c3.min.js"),
-      tags$link(rel="stylesheet", type="text/css", href="nvd3/nv.d3.min.css"),
+      tags$link(rel="stylesheet", type="text/css", href="c3/c3.css"),
       tags$script(src="linechart-binding.js")
       
     )),
@@ -31,19 +31,31 @@ renderLineChart <- function(expr, env=parent.frame(), quoted=FALSE) {
   installExprFunction(expr, "func", env, quoted)
   
   function() {
-    dataframe <- func()
+    dataframe <- list(json = func(), type = 'bar', groups = list(paste0("Factor", 1:6)),
+                      types = list("Growth" = 'line')) #, types = list("Data4" = 'line'), groups = list(c('Data1','Data2','Data3')) )
 
-    mapply(function(col, name) {
-
-      values <- mapply(function(val, i) {
-        list(label = i, value = val)
-      }, col, 1:nrow(dataframe), SIMPLIFY=FALSE, USE.NAMES=FALSE)
-
-      list(key = name, values = values)
-      
-    }, dataframe, names(dataframe), SIMPLIFY=FALSE, USE.NAMES=FALSE)
+#     mapply(function(col, name) {
+# 
+#       values <- mapply(function(val, i) {
+#         list(label = i, value = val)
+#       }, col, 1:nrow(dataframe), SIMPLIFY=FALSE, USE.NAMES=FALSE)
+# 
+#       list(key = name, values = values)
+#       
+#     }, dataframe, names(dataframe), SIMPLIFY=FALSE, USE.NAMES=FALSE)
+    
+#     function() {
+#       groupframe <- func()
+#     }
+    
   }
 }
+
+
+
+      #list(json = name, type = 'bar', types = list("Data4" = 'line'), groups = list(c('Data1','Data2','Data3')) )
+      
+
 
 
 # Data frame or list looks like:

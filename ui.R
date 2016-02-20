@@ -8,6 +8,8 @@ shinyUI(fluidPage(
         a(href="http://nvd3.org/", "NVD3.js"),
         "JavaScript charting library."
       ),
+      tags$input(type="button", id="A", value="Update chart"),
+
       p("Source code:",
         a(href="https://github.com/jcheng5/shiny-js-examples/tree/master/output", "@jcheng5/shiny-js-examples/output"))
     )
@@ -17,10 +19,14 @@ shinyUI(fluidPage(
       lineChartOutput("mychart")
     ),
     column(width=3,
-      sliderInput("sinePhase", "Sine phase", -10, 10, 0, step=1,
-        animate=animationOptions(interval=100, loop=TRUE)),
-      sliderInput("sineAmplitude", "Sine amplitude", -2, 2, 1, step=0.1,
-        animate=animationOptions(interval=100, loop=TRUE))
+      
+           selectInput("select.country", label = h3("Select Country"), 
+                       choices = countrylist, 
+                       selected = 1),
+           selectInput("select.product", label = h3("Select Product"), 
+                       choices = productlist, 
+                       selected = 1)
+      
     )
   )
 ))
