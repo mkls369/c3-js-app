@@ -4,21 +4,11 @@ rm(list=ls())
 source("linechart.R")
 require("reshape2")
 
-dt1 <- data.frame(
-  "Data1" = round(sin(1:5/10) * 0.25 + 1, 2),
-  "Data2" = 1:5/10,
-  "Data3" = round(sin(1:5/10) * 0.25 + rnorm(5,0,2))
-)
+dta.n <- matrix( round(rnorm(90*5) * 10, 1), ncol = 6) 
 
-dt1["Data4"] <- rowSums(dt1)
-
-dta.n <- matrix( round(rnorm(180*5) * 10, 1), ncol = 6) 
-
-dta.c <- cbind(rep(c("Brazil", "Germany", "USA"), each = 50),
-               rep(rep(c("Product1", "Product2","Product3","Product4","Product5",
-                         "Product6", "Product7","Product8","Product9","Product10"), each = 5),3),
-               rep(2015:2019,30)
-               
+dta.c <- cbind(rep(c("Brazil", "Germany", "USA"), each = 25),
+               rep(rep(c("Product1", "Product2","Product3","Product4","Product5")
+                , each = 5),3), rep(2015:2019,15)
                )
 
 dta.m <- as.data.frame(cbind(dta.c, dta.n), stringsAsFactors = F)
@@ -29,7 +19,7 @@ dta.m[paste0("Factor", 1:6)] <- apply(dta.m[paste0("Factor", 1:6)], 2, as.numeri
 
 dta.m["Growth"] <-  rowSums(dta.m[grep("Factor", colnames(dta.m), value = T) ])
 
-dta.m <- subset(dta.m, Product %in% c("Product1", "Product2"))
+#dta.m <- subset(dta.m, Product %in% c("Product1", "Product2"))
 
 dta.m1 <- melt(dta.m, id= 1:3)
 
